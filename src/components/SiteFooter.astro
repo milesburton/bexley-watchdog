@@ -1,0 +1,131 @@
+---
+---
+
+<footer class="site-footer">
+	<div class="site-footer-inner">
+		<span>Bexley Watchdog &mdash; consumer reviews for Erith &amp; Bexley</span>
+		<nav class="footer-links" aria-label="Footer links">
+			<a href="/about/">About</a>
+		</nav>
+		<button type="button" id="theme-toggle" class="theme-toggle" aria-label="Switch between light and dark theme">
+			<svg class="icon-sun" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+				<circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2" />
+				<path
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
+				/>
+			</svg>
+			<svg class="icon-moon" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+				<path
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"
+				/>
+			</svg>
+		</button>
+	</div>
+</footer>
+
+<script is:inline>
+	(function () {
+		var button = document.getElementById('theme-toggle');
+		if (!button) return;
+
+		function currentTheme() {
+			var applied = document.documentElement.getAttribute('data-theme');
+			if (applied === 'light' || applied === 'dark') return applied;
+			var stored = localStorage.getItem('theme');
+			if (stored === 'light' || stored === 'dark') return stored;
+			return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+		}
+
+		function apply(theme) {
+			document.documentElement.setAttribute('data-theme', theme);
+			localStorage.setItem('theme', theme);
+		}
+
+		button.addEventListener('click', function () {
+			apply(currentTheme() === 'light' ? 'dark' : 'light');
+		});
+	})();
+</script>
+
+<style>
+	.site-footer {
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 10;
+		width: 100%;
+		border-top: 1px solid var(--border);
+		background: var(--bg-raised);
+	}
+
+	.site-footer-inner {
+		max-width: 1280px;
+		margin: 0 auto;
+		padding: 0.65rem 1.25rem;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.76rem;
+		color: var(--text-dim);
+		min-height: var(--footer-height, 48px);
+	}
+
+	.site-footer a {
+		color: var(--text-dim);
+		text-decoration: none;
+	}
+
+	.site-footer a:hover {
+		color: var(--accent-strong);
+	}
+
+	.footer-links {
+		margin-left: auto;
+		display: flex;
+		align-items: center;
+		gap: 0.9rem;
+	}
+
+	.theme-toggle {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.75rem;
+		height: 1.75rem;
+		padding: 0;
+		background: var(--bg-card);
+		border: 1px solid var(--border);
+		border-radius: 6px;
+		color: var(--text-dim);
+		cursor: pointer;
+		transition: color 120ms ease, border-color 120ms ease;
+	}
+
+	.theme-toggle:hover {
+		color: var(--text);
+		border-color: var(--border-strong);
+	}
+
+	.icon-moon {
+		display: none;
+	}
+
+	:root[data-theme='light'] .icon-sun {
+		display: none;
+	}
+
+	:root[data-theme='light'] .icon-moon {
+		display: block;
+	}
+</style>

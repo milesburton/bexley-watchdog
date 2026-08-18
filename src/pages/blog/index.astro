@@ -1,0 +1,71 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+import { formatDate } from '../../lib/format';
+import { getHeroImage } from '../../lib/posts';
+
+const allPosts = await getCollection('blog');
+const posts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Layout title="Blog" description="Reviews and reports on roofers, plumbers, and tradesmen in Erith and Bexley.">
+	<main class="shell">
+		<PageHeader kicker="Reports" title="Blog" />
+
+		<ul class="post-list">
+			{posts.map((post) => (
+				<PostCard href={`/blog/${post.data.slug}/`} image={getHeroImage(post)} title={post.data.title}>
+					<Fragment slot="meta">
+						<time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+					</Fragment>
+					{post.data.excerpt && <p class="post-excerpt" slot="excerpt">{post.data.excerpt}</p>}
+					{post.data.tags.length > 0 && (
+						<ul class="post-tags" slot="tags">
+							{post.data.tags.map((tag) => (
+								<li>{tag}</li>
+							))}
+						</ul>
+					)}
+				</PostCard>
+			))}
+		</ul>
+	</main>
+</Layout>
+
+<style>
+	time {
+		display: block;
+		margin-top: 0.3rem;
+		font-size: 0.78rem;
+		color: var(--text-dim);
+	}
+
+	.post-excerpt {
+		margin: 0.5rem 0 0;
+		color: var(--text-muted);
+		font-size: 0.92rem;
+		line-height: 1.55;
+	}
+
+	.post-tags {
+		list-style: none;
+		margin: 0.6rem 0 0;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+	}
+
+	.post-tags li {
+		font-size: 0.68rem;
+		font-weight: 600;
+		letter-spacing: 0.03em;
+		color: var(--text-dim);
+		background: var(--bg-raised);
+		border: 1px solid var(--border);
+		border-radius: 999px;
+		padding: 0.15rem 0.55rem;
+	}
+</style>

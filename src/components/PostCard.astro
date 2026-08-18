@@ -1,0 +1,116 @@
+---
+// Shared list-card layout (thumbnail + title + metadata) used by the blog
+// index and homepage. The pages differ on what sits next to the title and
+// whether tags/dates are shown at all, so those areas are slots rather
+// than props.
+interface Props {
+	href: string;
+	image?: string | null;
+	title: string;
+	external?: boolean;
+}
+
+const { href, image, title, external = false } = Astro.props;
+const linkAttrs = external ? { target: '_blank', rel: 'noreferrer' } : {};
+---
+
+<li class="post-card">
+	<a href={href} {...linkAttrs} class="post-thumb-link" tabindex="-1" aria-hidden="true">
+		{image ? (
+			<img src={image} alt="" class="post-thumb" loading="lazy" />
+		) : (
+			<span class="post-thumb post-thumb-placeholder">
+				<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+					<rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.5" />
+					<circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" />
+					<path d="M21 15l-5-5-9 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+				</svg>
+			</span>
+		)}
+	</a>
+	<div class="post-body">
+		<div class="post-title-row">
+			<a href={href} {...linkAttrs} class="post-title">
+				{title}
+			</a>
+			<slot name="title-extra" />
+		</div>
+		<slot name="meta" />
+		<slot name="excerpt" />
+		<slot name="tags" />
+	</div>
+</li>
+
+<style>
+	.post-card {
+		display: flex;
+		gap: 1.1rem;
+		border-bottom: 1px solid var(--border);
+		padding-bottom: 1.1rem;
+	}
+
+	.post-thumb-link {
+		flex: 0 0 auto;
+	}
+
+	.post-thumb {
+		display: block;
+		width: 100px;
+		height: 72px;
+		object-fit: cover;
+		border-radius: 8px;
+		border: 1px solid var(--border);
+		background: var(--bg-raised);
+	}
+
+	.post-thumb-placeholder {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--text-dim);
+		border-style: dashed;
+	}
+
+	.post-body {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.post-title-row {
+		display: flex;
+		align-items: baseline;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.post-title {
+		display: block;
+		font-size: 1.05rem;
+		font-weight: 600;
+		text-decoration: none;
+		color: var(--text);
+		line-height: 1.4;
+	}
+
+	.post-title:hover {
+		color: var(--accent-strong);
+	}
+
+	@media (max-width: 560px) {
+		.post-thumb {
+			width: 72px;
+			height: 72px;
+		}
+	}
+</style>
+
+<style is:global>
+	.post-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 1.1rem;
+	}
+</style>

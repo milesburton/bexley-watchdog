@@ -1,0 +1,235 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { formatDate } from '../lib/format';
+import { getHeroImage } from '../lib/posts';
+
+const allPosts = await getCollection('blog');
+
+const latestPosts = allPosts
+	.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+	.slice(0, 5)
+	.map((post) => {
+		const wordCount = (post.body ?? '').replace(/<[^>]+>/g, ' ').trim().split(/\s+/).filter(Boolean).length;
+		const readingMinutes = Math.max(1, Math.round(wordCount / 200));
+		return {
+			href: `/blog/${post.data.slug}/`,
+			title: post.data.title,
+			date: post.data.date,
+			excerpt: post.data.excerpt,
+			category: post.data.tags[0],
+			readingMinutes,
+			image: getHeroImage(post),
+		};
+	});
+---
+
+<Layout>
+	<main class="shell">
+		<header class="hero">
+			<p class="kicker">Consumer Watchdog</p>
+			<h1>Bexley Watchdog</h1>
+			<p class="intro">
+				Reviews on roofers, plumbers and tradesmen in Erith and Bexley.
+			</p>
+			<p class="intro">
+				A independent, resident-run record of good and bad experiences with local trade
+				businesses -- here to help neighbours in Erith and Bexley avoid rogue traders and
+				cowboy builders, and find people who actually do the job properly.
+			</p>
+		</header>
+
+		<section class="latest">
+			<h2 class="section-title">Latest Reports</h2>
+			<ul class="latest-list">
+				{latestPosts.map((post) => (
+					<li class="latest-card">
+						<a href={post.href} class="latest-thumb-link" tabindex="-1" aria-hidden="true">
+							{post.image ? (
+								<img src={post.image} alt="" class="latest-thumb" loading="lazy" />
+							) : (
+								<span class="latest-thumb latest-thumb-placeholder">
+									<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+										<rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.5" />
+										<circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" />
+										<path d="M21 15l-5-5-9 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+									</svg>
+								</span>
+							)}
+						</a>
+						<div class="latest-body">
+							<a href={post.href} class="latest-title">
+								{post.title}
+							</a>
+							<div class="latest-meta">
+								<time datetime={post.date.toISOString()}>{formatDate(post.date)}</time>
+								{post.category && (
+									<>
+										<span class="latest-sep">&middot;</span>
+										<span class="latest-category">{post.category}</span>
+									</>
+								)}
+								<span class="latest-sep">&middot;</span>
+								<span>{post.readingMinutes} min read</span>
+							</div>
+							{post.excerpt && <p class="latest-excerpt">{post.excerpt}</p>}
+						</div>
+					</li>
+				))}
+			</ul>
+			<a href="/blog/" class="all-posts-link">All reports &rarr;</a>
+		</section>
+	</main>
+</Layout>
+
+<style>
+	main.shell {
+		--shell-max-width: 900px;
+	}
+
+	.hero {
+		margin-bottom: 3.5rem;
+	}
+
+	.kicker {
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--accent-strong);
+		font-size: 0.78rem;
+		font-weight: 600;
+		margin: 0 0 0.75rem;
+	}
+
+	h1 {
+		font-size: clamp(2.25rem, 5vw, 3.4rem);
+		margin: 0;
+		line-height: 1.05;
+		letter-spacing: -0.01em;
+	}
+
+	.intro {
+		margin-top: 1rem;
+		max-width: 75ch;
+		color: var(--text-muted);
+		font-size: 1.08rem;
+		line-height: 1.6;
+	}
+
+	.section-title {
+		font-size: 0.78rem;
+		font-weight: 600;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--text-dim);
+		margin: 0 0 1rem;
+	}
+
+	.latest {
+		margin-bottom: 3rem;
+	}
+
+	.latest-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 1.1rem;
+	}
+
+	.latest-card {
+		display: flex;
+		gap: 1.1rem;
+		border-bottom: 1px solid var(--border);
+		padding-bottom: 1.1rem;
+	}
+
+	.latest-thumb-link {
+		flex: 0 0 auto;
+	}
+
+	.latest-thumb {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100px;
+		height: 72px;
+		object-fit: cover;
+		border-radius: 8px;
+		border: 1px solid var(--border);
+		background: var(--bg-raised);
+	}
+
+	.latest-thumb-placeholder {
+		color: var(--text-dim);
+		border-style: dashed;
+	}
+
+	.latest-body {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.latest-title {
+		display: block;
+		font-size: 1.05rem;
+		font-weight: 600;
+		text-decoration: none;
+		color: var(--text);
+		line-height: 1.4;
+	}
+
+	.latest-title:hover {
+		color: var(--accent-strong);
+	}
+
+	.latest-meta {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin-top: 0.3rem;
+		font-size: 0.78rem;
+		color: var(--text-dim);
+	}
+
+	.latest-sep {
+		opacity: 0.6;
+	}
+
+	.latest-category {
+		color: var(--accent-strong);
+		font-weight: 600;
+	}
+
+	.latest-excerpt {
+		margin: 0.5rem 0 0;
+		color: var(--text-muted);
+		font-size: 0.92rem;
+		line-height: 1.55;
+	}
+
+	.all-posts-link {
+		display: inline-block;
+		margin-top: 1.5rem;
+		font-size: 0.9rem;
+		font-weight: 600;
+		color: var(--accent-strong);
+		text-decoration: none;
+	}
+
+	.all-posts-link:hover {
+		text-decoration: underline;
+	}
+
+	@media (max-width: 620px) {
+		.latest-thumb {
+			width: 72px;
+			height: 72px;
+		}
+
+		.shell {
+			padding: 2.5rem 1.25rem 3rem;
+		}
+	}
+</style>

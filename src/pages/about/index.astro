@@ -1,0 +1,36 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+---
+
+<Layout title="About" description="About Bexley Watchdog -- reviews on roofers, plumbers, and tradesmen in Erith and Bexley.">
+	<main class="shell">
+		<PageHeader kicker="About" title="About Bexley Watchdog" />
+		<div class="post-body">
+			<p>This is an example of a page. Unlike posts, which are displayed on your blog&#8217;s front page in the order they&#8217;re published, pages are better suited for more timeless content that you want to be easily accessible, like your About or Contact information.</p>
+			<p>This page carries over the original &#8220;About&#8221; content from the site&#8217;s WordPress.com era, migrated as-is via the WordPress.com REST API.</p>
+		</div>
+	</main>
+</Layout>
+
+<style>
+	main.shell {
+		--shell-max-width: 720px;
+	}
+
+	.post-body {
+		margin-top: 1rem;
+		color: var(--text);
+		line-height: 1.7;
+		font-size: 1rem;
+	}
+
+	.post-body :global(p) {
+		margin: 0 0 1.1rem;
+		color: var(--text-body);
+	}
+
+	.post-body :global(a) {
+		color: var(--accent-strong);
+	}
+</style>

@@ -1,0 +1,465 @@
+---
+import SiteFooter from '../components/SiteFooter.astro';
+
+interface Props {
+	title?: string;
+	description?: string;
+	image?: string;
+	type?: 'website' | 'article';
+	structuredData?: Record<string, unknown> | Record<string, unknown>[];
+	date?: string;
+}
+
+const props = Astro.props;
+const {
+	title = 'Bexley Watchdog',
+	description = 'Reviews on roofers, plumbers, and tradesmen in Erith and Bexley -- helping local residents avoid rogue traders and cowboy builders.',
+	image,
+	type = 'website',
+	structuredData,
+} = props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImageURL = image ? new URL(image, Astro.site).toString() : undefined;
+
+const websiteSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'WebSite',
+	name: 'Bexley Watchdog',
+	url: 'https://bexleywatchdog.co.uk/',
+	description: 'Reviews on roofers, plumbers, and tradesmen in Erith and Bexley.',
+};
+
+const schemaBlocks = [
+	websiteSchema,
+	...(structuredData ? (Array.isArray(structuredData) ? structuredData : [structuredData]) : []),
+];
+
+const nav = [
+	{ href: '/', label: 'Home' },
+	{ href: '/blog/', label: 'Blog' },
+	{ href: '/about/', label: 'About' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title} | Bexley Watchdog</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalURL} />
+		<link rel="alternate" type="application/rss+xml" title="Bexley Watchdog" href="/rss.xml" />
+
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
+
+		<meta property="og:type" content={type} />
+		<meta property="og:title" content={title === 'Bexley Watchdog' ? title : `${title} | Bexley Watchdog`} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonicalURL} />
+		<meta property="og:site_name" content="Bexley Watchdog" />
+		{ogImageURL && <meta property="og:image" content={ogImageURL} />}
+
+		<meta name="twitter:card" content={ogImageURL ? 'summary_large_image' : 'summary'} />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		{ogImageURL && <meta name="twitter:image" content={ogImageURL} />}
+
+		{schemaBlocks.map((block) => <script type="application/ld+json" set:html={JSON.stringify(block)} />)}
+
+		<script is:inline>
+			(function () {
+				var stored = localStorage.getItem('theme');
+				if (stored === 'light' || stored === 'dark') {
+					document.documentElement.setAttribute('data-theme', stored);
+				}
+			})();
+		</script>
+	</head>
+	<body>
+		<div class="page">
+			<div class="frame">
+				<aside class="sidebar">
+					<a href="/" class="brand">
+						<span class="brand-mark" aria-hidden="true">BW</span>
+						<span>Bexley Watchdog</span>
+					</a>
+					<nav>
+						<ul>
+							{nav.map((item) => (
+								<li>
+									<a
+										href={item.href}
+										aria-current={currentPath === item.href || (currentPath.startsWith(item.href) && item.href !== '/') ? 'page' : undefined}
+									>
+										{item.label}
+									</a>
+								</li>
+							))}
+						</ul>
+					</nav>
+				</aside>
+				<div class="content-area">
+					<slot />
+				</div>
+			</div>
+			<SiteFooter />
+		</div>
+	</body>
+</html>
+
+<style is:global>
+	:root,
+	:root[data-theme='dark'] {
+		--bg: #05070d;
+		--bg-raised: #0b1120;
+		--bg-card: #0f172a;
+		--border: rgba(148, 163, 184, 0.16);
+		--border-strong: rgba(148, 163, 184, 0.32);
+		--text: #e2e8f0;
+		--text-muted: #94a3b8;
+		--text-dim: #64748b;
+		--text-body: #cbd5e1;
+		--accent: #38bdf8;
+		--accent-strong: #7dd3fc;
+		--row-stripe: rgba(148, 163, 184, 0.04);
+		--nav-active-bg: rgba(56, 189, 248, 0.1);
+		--overlay-backdrop: rgba(2, 6, 15, 0.7);
+		--overlay-shadow: rgba(0, 0, 0, 0.5);
+		--card-gradient-top: rgba(56, 189, 248, 0.07);
+		--card-gradient-top-hover: rgba(56, 189, 248, 0.12);
+		--card-gradient-bottom: rgba(15, 23, 42, 0.4);
+		--card-gradient-bottom-hover: rgba(15, 23, 42, 0.5);
+		--highlight-bg: rgba(56, 189, 248, 0.25);
+		--gradient-tint-rgb: 124, 58, 237;
+		--gradient-tint-opacity: 0.08;
+		--bg-gradient: linear-gradient(135deg, rgba(var(--gradient-tint-rgb), var(--gradient-tint-opacity)) 0%, var(--bg) 60%);
+		color-scheme: dark;
+		font-family: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+	}
+
+	:root[data-theme='light'] {
+		--bg: #f8fafc;
+		--bg-raised: #eef2f7;
+		--bg-card: #ffffff;
+		--border: rgba(15, 23, 42, 0.1);
+		--border-strong: rgba(15, 23, 42, 0.18);
+		--text: #0f172a;
+		--text-muted: #475569;
+		--text-dim: #64748b;
+		--text-body: #334155;
+		--accent: #0284c7;
+		--accent-strong: #0369a1;
+		--row-stripe: rgba(15, 23, 42, 0.025);
+		--nav-active-bg: rgba(2, 132, 199, 0.1);
+		--overlay-backdrop: rgba(15, 23, 42, 0.35);
+		--overlay-shadow: rgba(15, 23, 42, 0.25);
+		--card-gradient-top: rgba(2, 132, 199, 0.06);
+		--card-gradient-top-hover: rgba(2, 132, 199, 0.1);
+		--card-gradient-bottom: rgba(255, 255, 255, 0.6);
+		--card-gradient-bottom-hover: rgba(255, 255, 255, 0.8);
+		--highlight-bg: rgba(2, 132, 199, 0.2);
+		--gradient-tint-rgb: 79, 70, 229;
+		--gradient-tint-opacity: 0.15;
+		--bg-gradient: linear-gradient(135deg, rgba(var(--gradient-tint-rgb), var(--gradient-tint-opacity)) 0%, var(--bg) 60%);
+		color-scheme: light;
+	}
+
+	@media (prefers-color-scheme: light) {
+		:root:not([data-theme]) {
+			--bg: #f8fafc;
+			--bg-raised: #eef2f7;
+			--bg-card: #ffffff;
+			--border: rgba(15, 23, 42, 0.1);
+			--border-strong: rgba(15, 23, 42, 0.18);
+			--text: #0f172a;
+			--text-muted: #475569;
+			--text-dim: #64748b;
+			--text-body: #334155;
+			--accent: #0284c7;
+			--accent-strong: #0369a1;
+			--row-stripe: rgba(15, 23, 42, 0.025);
+			--nav-active-bg: rgba(2, 132, 199, 0.1);
+			--overlay-backdrop: rgba(15, 23, 42, 0.35);
+			--overlay-shadow: rgba(15, 23, 42, 0.25);
+			--card-gradient-top: rgba(2, 132, 199, 0.06);
+			--card-gradient-top-hover: rgba(2, 132, 199, 0.1);
+			--card-gradient-bottom: rgba(255, 255, 255, 0.6);
+			--card-gradient-bottom-hover: rgba(255, 255, 255, 0.8);
+			--highlight-bg: rgba(2, 132, 199, 0.2);
+			--gradient-tint-rgb: 79, 70, 229;
+			--gradient-tint-opacity: 0.15;
+			--bg-gradient: linear-gradient(135deg, rgba(var(--gradient-tint-rgb), var(--gradient-tint-opacity)) 0%, var(--bg) 60%);
+			color-scheme: light;
+		}
+	}
+
+	:root {
+		--footer-height: 48px;
+	}
+
+	@media (max-width: 620px) {
+		:root {
+			--footer-height: 76px;
+		}
+	}
+
+	* {
+		box-sizing: border-box;
+	}
+
+	html,
+	body {
+		margin: 0;
+		width: 100%;
+		min-height: 100%;
+		color: var(--text);
+	}
+
+	html {
+		background: var(--bg-gradient, var(--bg));
+		background-attachment: fixed;
+	}
+
+	body {
+		font-family: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+		line-height: 1.5;
+	}
+
+	a {
+		color: inherit;
+	}
+
+	code, pre {
+		font-family: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+	}
+
+	.content-area h1 {
+		font-size: clamp(1.9rem, 4vw, 2.6rem);
+		margin: 0 0 1.5rem;
+		line-height: 1.2;
+	}
+
+	.content-area h2,
+	.content-area h3,
+	.content-area h4 {
+		margin: 2rem 0 0.75rem;
+		line-height: 1.3;
+		color: var(--text);
+	}
+
+	.content-area p {
+		margin: 0 0 1.1rem;
+		color: var(--text-body);
+		line-height: 1.65;
+	}
+
+	.content-area a {
+		color: var(--accent-strong);
+	}
+
+	.content-area ul,
+	.content-area ol {
+		margin: 0 0 1.1rem;
+		padding-left: 1.4rem;
+		color: var(--text-body);
+	}
+
+	.content-area li {
+		margin-bottom: 0.4rem;
+	}
+
+	.content-area img {
+		max-width: 100%;
+		height: auto;
+		border-radius: 8px;
+	}
+
+	.content-area blockquote {
+		margin: 1.25rem 0;
+		padding: 0.25rem 1.25rem;
+		border-left: 3px solid var(--border-strong);
+		color: var(--text-muted);
+	}
+
+	.content-area pre {
+		background: var(--bg-card);
+		border: 1px solid var(--border);
+		border-radius: 8px;
+		padding: 1rem;
+		overflow-x: auto;
+	}
+
+	.content-area code {
+		background: var(--bg-card);
+		border-radius: 4px;
+		padding: 0.1rem 0.35rem;
+		font-size: 0.9em;
+	}
+
+	.content-area pre code {
+		background: none;
+		padding: 0;
+	}
+
+	.content-area table {
+		width: 100%;
+		border-collapse: collapse;
+		margin: 1.25rem 0;
+		font-size: 0.92rem;
+	}
+
+	.content-area th,
+	.content-area td {
+		border: 1px solid var(--border);
+		padding: 0.6rem 0.85rem;
+		text-align: left;
+		vertical-align: top;
+	}
+
+	.content-area th {
+		background: var(--bg-card);
+		color: var(--text);
+		font-weight: 600;
+	}
+
+	.content-area tr:nth-child(even) td {
+		background: var(--row-stripe);
+	}
+
+	/* Shared page container. Pages set --shell-max-width/--shell-padding-top
+	   to vary width/spacing without restating margin/padding each time. */
+	.shell {
+		max-width: var(--shell-max-width, 780px);
+		margin: 0 auto;
+		padding: var(--shell-padding-top, 4rem) 2rem 5rem;
+	}
+</style>
+
+<style>
+	.page {
+		display: flex;
+		flex-direction: column;
+		min-height: 100vh;
+	}
+
+	.frame {
+		display: flex;
+		flex: 1;
+		width: 100%;
+		max-width: 1280px;
+		margin: 0 auto;
+		padding-bottom: var(--footer-height);
+	}
+
+	.sidebar {
+		flex: 0 0 240px;
+		display: flex;
+		flex-direction: column;
+		padding: 2rem 1.25rem;
+		border-right: 1px solid var(--border);
+		position: sticky;
+		top: 0;
+		align-self: flex-start;
+		max-height: calc(100vh - var(--footer-height));
+	}
+
+	.brand {
+		display: flex;
+		align-items: center;
+		gap: 0.65rem;
+		text-decoration: none;
+		font-weight: 600;
+		font-size: 1.02rem;
+		color: var(--text);
+		margin-bottom: 2.25rem;
+	}
+
+	.brand-mark {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 34px;
+		height: 34px;
+		border-radius: 50%;
+		border: 1px solid var(--border-strong);
+		background: var(--nav-active-bg);
+		color: var(--accent-strong);
+		font-size: 0.78rem;
+		font-weight: 700;
+		letter-spacing: 0.02em;
+	}
+
+	nav ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+	}
+
+	nav a {
+		display: flex;
+		align-items: center;
+		gap: 0.35rem;
+		padding: 0.5rem 0.65rem;
+		border-radius: 6px;
+		text-decoration: none;
+		color: var(--text-muted);
+		font-size: 0.92rem;
+		font-weight: 500;
+		transition: background 120ms ease, color 120ms ease;
+	}
+
+	nav a:hover {
+		background: var(--bg-raised);
+		color: var(--text);
+	}
+
+	nav a[aria-current='page'] {
+		background: var(--nav-active-bg);
+		color: var(--accent-strong);
+	}
+
+	.content-area {
+		flex: 1;
+		min-width: 0;
+	}
+
+	@media (max-width: 860px) {
+		.frame {
+			flex-direction: column;
+		}
+
+		.sidebar {
+			position: static;
+			height: auto;
+			flex-direction: row;
+			flex-wrap: wrap;
+			align-items: center;
+			border-right: none;
+			border-bottom: 1px solid var(--border);
+			padding: 1rem 1.25rem;
+		}
+
+		.brand {
+			margin-bottom: 0;
+			margin-right: auto;
+		}
+
+		nav ul {
+			flex-direction: row;
+			flex-wrap: wrap;
+		}
+	}
+</style>
