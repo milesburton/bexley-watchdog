@@ -11,7 +11,9 @@
     "preview": "astro preview",
     "astro": "astro",
     "new-post": "node scripts/new-post.mjs",
-    "add-image": "node scripts/add-image.mjs"
+    "add-image": "node scripts/add-image.mjs",
+    "test": "playwright test",
+    "test:update-snapshots": "playwright test --update-snapshots"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
@@ -19,6 +21,7 @@
     "astro": "^7.1.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "@types/node": "^26.1.2",
     "sharp": "^0.35.3",
     "typescript": "^7.0.2"

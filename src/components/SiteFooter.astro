@@ -1,9 +1,32 @@
 ---
+const commit = __BUILD_COMMIT__;
+const buildDate = __BUILD_DATE__;
+
+const formatted =
+	buildDate !== 'unknown'
+		? new Intl.DateTimeFormat('en-GB', {
+				day: 'numeric',
+				month: 'short',
+				year: 'numeric',
+				hour: '2-digit',
+				minute: '2-digit',
+			}).format(new Date(buildDate))
+		: 'unknown';
+
+const commitUrl = commit !== 'unknown' ? `https://github.com/milesburton/bexley-watchdog/commit/${commit}` : undefined;
 ---
 
 <footer class="site-footer">
 	<div class="site-footer-inner">
 		<span>Bexley Watchdog &mdash; consumer reviews for Erith &amp; Bexley</span>
+		<span class="sep">·</span>
+		<span>Last updated {formatted}</span>
+		<span class="sep">·</span>
+		{commitUrl ? (
+			<a href={commitUrl} target="_blank" rel="noreferrer"><code>{commit}</code></a>
+		) : (
+			<code>{commit}</code>
+		)}
 		<nav class="footer-links" aria-label="Footer links">
 			<a href="/about/">About</a>
 		</nav>
@@ -88,6 +111,17 @@
 
 	.site-footer a:hover {
 		color: var(--accent-strong);
+	}
+
+	.sep {
+		opacity: 0.5;
+	}
+
+	.site-footer code {
+		font-size: 0.76rem;
+		background: var(--bg-card);
+		border-radius: 4px;
+		padding: 0.1rem 0.4rem;
 	}
 
 	.footer-links {
