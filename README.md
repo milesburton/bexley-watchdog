@@ -2,7 +2,7 @@
 
 Consumer reviews on roofers, plumbers, and tradesmen operating in Erith and Bexley, UK. The site exists to help local residents share and check experiences with local trade businesses -- both good and bad -- and avoid rogue traders and cowboy builders.
 
-Live at [bexleywatchdog.co.uk](https://bexleywatchdog.co.uk).
+Live at [bexleywatchdog.milesburton.com](https://bexleywatchdog.milesburton.com) (previously at bexleywatchdog.co.uk, which now redirects here and will be retired).
 
 ## Why this migration
 

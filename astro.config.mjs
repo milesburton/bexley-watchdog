@@ -16,7 +16,7 @@ const commitDate = safeGit('git log -1 --format=%cI');
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://bexleywatchdog.co.uk',
+	site: 'https://bexleywatchdog.milesburton.com',
 	integrations: [sitemap()],
 	vite: {
 		define: {

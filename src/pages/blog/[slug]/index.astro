@@ -23,10 +23,10 @@ const articleSchema = {
 	headline: post.data.title,
 	datePublished: post.data.date.toISOString(),
 	dateModified: post.data.date.toISOString(),
-	author: { '@type': 'Organization', name: 'Bexley Watchdog', url: 'https://bexleywatchdog.co.uk/' },
+	author: { '@type': 'Organization', name: 'Bexley Watchdog', url: 'https://bexleywatchdog.milesburton.com/' },
 	description: post.data.excerpt,
-	url: `https://bexleywatchdog.co.uk/blog/${post.data.slug}/`,
-	...(heroImage ? { image: `https://bexleywatchdog.co.uk${heroImage}` } : {}),
+	url: `https://bexleywatchdog.milesburton.com/blog/${post.data.slug}/`,
+	...(heroImage ? { image: `https://bexleywatchdog.milesburton.com${heroImage}` } : {}),
 	keywords: post.data.tags.join(', '),
 };
 ---
